@@ -14,25 +14,33 @@ def chmod_calculator(perm):
     group = 0
     other = 0
 
-    # For Loop
-    for item in perm:
-        a.append((perm.get(item)))
-    
-    def get_octal(a, b, part):
-        for item in a[b]:
+    if perm.get("user"):
+        for item in list(perm.get('user')):
             if item == 'r':
-                part = part + 4
-            elif item == 'w':
-                part = part + 2
-            elif item == 'x':
-                part = part + 1
-        return part
+                user = user + 4
+            if item == 'w':
+                user = user + 2
+            if item == 'x':
+                user = user + 1
 
-    user = (get_octal(a,0,user))
-    group = (get_octal(a,1,group))
-    other = (get_octal(a,2,other))
+    if perm.get("group"):
+        for item in list(perm.get('group')):
+            if item == 'r':
+                group = group + 4
+            if item == 'w':
+                group = group + 2
+            if item == 'x':
+                group = group + 1
+    if perm.get("other"):
+        for item in list(perm.get('other')):
+            if item == 'r':
+                other = other + 4
+            if item == 'w':
+                other = other + 2
+            if item == 'x':
+                other = other + 1
 
-    return (str(user) + str(group) + str(other))
+    return str(user) + str(group) + str(other)
 
             
 
@@ -40,5 +48,14 @@ def chmod_calculator(perm):
 
 print(chmod_calculator({"user": 'rwx', "group": 'r-x', "other": 'r--'}))
 #chmod_calculator({"user": 'rwx', "group": 'r-x', "other": 'r--'})
+#print(chmod_calculator({"group": 'rwx'})) #070
 
-print(chmod_calculator({"group": 'rwx'})) #070
+
+# BEST PRACTICE
+def chmod_calculator1(perm):
+    perms = { "r": 4, "w": 2, "x": 1 }
+    value = ""
+    for permission in ["user", "group", "other"]:
+        value += str(sum(perms.get(x, 0) for x in perm.get(permission, "")))
+        
+    return value
